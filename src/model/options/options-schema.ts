@@ -241,7 +241,12 @@ export const optionsSchema = z.strictObject({
     provinces: z.strictObject({ ratio: percent }),
     religions: z.strictObject({ limit: count }),
     burgs: z.strictObject({ limit: count }), // AUTO_BURG_LIMIT means "as many as the land supports"
-    mana: z.strictObject({ sources: count, strength: nonNegative, reach: count }) // ore bodies to place, effect strength, gale length in cells
+    mana: z.strictObject({
+      sources: count, // ore bodies to place
+      strength: nonNegative, // effect multiplier
+      reach: count, // gale length in cells
+      land: z.number().min(0).max(1) // share of ore bodies placed under land
+    })
   }),
 
   /** how the app itself behaves: applied at once, generating nothing, describing no map */

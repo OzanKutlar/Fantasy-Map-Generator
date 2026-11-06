@@ -68,6 +68,20 @@ describe("placeSources", () => {
   });
 });
 
+describe("land placement", () => {
+  it("puts every ore body on land when the land share is 1", () => {
+    // the left half of the map is land, the right half sea
+    grid.cells.h = Uint8Array.from(grid.points, ([x]) => (x < 400 ? 30 : 10));
+    options.generation.mana.land = 1;
+    Mana.placeSources();
+
+    // a quadrupole arm reaches at most 0.6 x the largest radius (0.16 x 600) past its land center
+    const sources = options.map.mana?.sources ?? [];
+    expect(sources).toHaveLength(options.generation.mana.sources);
+    expect(sources.every(({ x }) => x < 460)).toBe(true);
+  });
+});
+
 describe("without mana", () => {
   it("returns the climate arrays untouched", () => {
     const temp = new Int8Array(grid.points.length).fill(10);

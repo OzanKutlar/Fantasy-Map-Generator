@@ -4,6 +4,7 @@
 import Alea from "alea";
 import type { MapData } from "@/model/options/options-schema";
 import type { Point } from "@/types/global";
+import { SEA_LEVEL } from "@/utils/height-utils";
 import { minmax, rn } from "@/utils/number-utils";
 
 type ManaSettings = NonNullable<MapData["mana"]>;
@@ -42,6 +43,15 @@ interface StrongField {
   uy: number;
 }
 
+/** everything source placement needs, read once from the options and the grid */
+interface Placement {
+  random: () => number;
+  width: number;
+  height: number;
+  landShare: number; // [0, 1]: chance an ore body sits under land
+  landPoints: Point[]; // empty before the heightmap exists
+}
+
 const STRONG_FIELD = 0.35; // a source takes part in a collision above this share of its peak field
 const MAX_SOURCES = 200;
 const MAX_REACH = 100; // cells
@@ -60,10 +70,16 @@ const NEUTRAL: Reading = { type: SITE.none, level: 0, dx: 0, dy: 0 };
 class ManaModule {
   /** place the ore bodies of a new map from the request: the commit point from generation to map options */
   placeSources(): void {
-    const { sources, strength, reach } = options.generation.mana;
+    const { sources, strength, reach, land } = options.generation.mana;
     const { width, height } = options.map.graph;
-    const random = Alea(`${options.map.seed}-mana`);
-    options.map.mana = { strength, reach, sources: createSources(random, sources, width, height) };
+    const placement: Placement = {
+      random: Alea(`${options.map.seed}-mana`),
+      width,
+      height,
+      landShare: minmax(land, 0, 1),
+      landPoints: getLandPoints()
+    };
+    options.map.mana = { strength, reach, sources: createSources(placement, sources) };
   }
 
   /** classify every grid cell from the stored sources; deterministic, so the renderer may ask at any time */
@@ -132,30 +148,43 @@ class ManaModule {
   }
 }
 
-function createSources(random: () => number, requested: number, width: number, height: number): ManaSource[] {
+/** ore bodies are geology: most of them sit under land. Empty before the heightmap exists */
+function getLandPoints(): Point[] {
+  const heights = grid.cells?.h;
+  if (!heights) return [];
+  return grid.points.filter((_, cell) => heights[cell] >= SEA_LEVEL);
+}
+
+/** a land point with the land share's chance when there is land, else anywhere on the map */
+function pickPosition({ random, width, height, landShare, landPoints }: Placement): Point {
+  if (landPoints.length && random() < landShare) {
+    const [x, y] = landPoints[Math.floor(random() * landPoints.length)];
+    return [x, y];
+  }
+  return [random() * width, random() * height];
+}
+
+function createSources(placement: Placement, requested: number): ManaSource[] {
+  const { random, width, height } = placement;
   const total = minmax(Math.round(requested), 0, MAX_SOURCES);
   const side = Math.min(width, height);
   const pickRadius = () => rn(side * (RADIUS_MIN + random() * (RADIUS_MAX - RADIUS_MIN)), 2);
   const sources: ManaSource[] = [];
 
   const quadrupoles = Math.floor((total * QUAD_SHARE) / 4);
-  for (let q = 0; q < quadrupoles; q++) sources.push(...createQuadrupole(random, pickRadius(), width, height));
+  for (let q = 0; q < quadrupoles; q++) sources.push(...createQuadrupole(placement, pickRadius()));
 
   for (let i = sources.length; i < total; i++) {
-    sources.push({
-      x: rn(random() * width, 1),
-      y: rn(random() * height, 1),
-      polarity: random() < 0.5 ? 1 : -1,
-      radius: pickRadius()
-    });
+    const [x, y] = pickPosition(placement);
+    sources.push({ x: rn(x, 1), y: rn(y, 1), polarity: random() < 0.5 ? 1 : -1, radius: pickRadius() });
   }
   return sources;
 }
 
 /** four sources around one center with alternating polarity: a cold core ringed by hot and windy fringes */
-function createQuadrupole(random: () => number, radius: number, width: number, height: number): ManaSource[] {
-  const cx = random() * width;
-  const cy = random() * height;
+function createQuadrupole(placement: Placement, radius: number): ManaSource[] {
+  const { random } = placement;
+  const [cx, cy] = pickPosition(placement);
   const turn = (random() * Math.PI) / 2;
   const spread = radius * QUAD_SPREAD;
 

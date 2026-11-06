@@ -100,7 +100,7 @@ class OptionsModel {
         provinces: { ratio: 20 },
         religions: { limit: 6 },
         burgs: { limit: 1000 },
-        mana: { sources: 24, strength: 1, reach: 12 }
+        mana: { sources: 24, strength: 1, reach: 12, land: 0.85 }
       },
       app: {
         mode: null,

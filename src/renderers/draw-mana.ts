@@ -5,8 +5,8 @@ import { log } from "@/utils/logger";
 import { ensureEl } from "@/utils/node-utils";
 import { rn } from "@/utils/number-utils";
 
-const ARROW_HEAD = 3; // px
-const MIN_OPACITY = 0.15; // a site's faint edge stays visible
+const ARROW_HEAD = 5; // px
+const MIN_OPACITY = 0.35; // a site's faint edge stays visible
 
 export function drawMana(): void {
   log.time("drawMana");

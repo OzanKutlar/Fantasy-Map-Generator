@@ -1117,21 +1117,21 @@
     "groups": {
       "manaHot": {
         "attrs": {
-          "fill": "#d7301f",
-          "opacity": 0.5
+          "fill": "#ff3d00",
+          "opacity": 0.75
         }
       },
       "manaCold": {
         "attrs": {
-          "fill": "#2c7fb8",
-          "opacity": 0.5
+          "fill": "#00e5ff",
+          "opacity": 0.75
         }
       },
       "manaGale": {
         "attrs": {
-          "stroke": "#7a5195",
-          "stroke-width": 1,
-          "opacity": 0.8
+          "stroke": "#e040fb",
+          "stroke-width": 1.5,
+          "opacity": 0.9
         }
       }
     }
