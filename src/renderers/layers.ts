@@ -15,6 +15,7 @@ import { drawJourneys } from "@/renderers/draw-journeys";
 import { drawLakes } from "@/renderers/draw-lakes";
 import { drawLandmass } from "@/renderers/draw-landmass";
 import { redrawLegend } from "@/renderers/draw-legend";
+import { drawMana } from "@/renderers/draw-mana";
 import { drawMarkers } from "@/renderers/draw-markers";
 import { drawMarkets, removeMarkets } from "@/renderers/draw-markets";
 import { drawMeasurers } from "@/renderers/draw-measurers";
@@ -368,6 +369,12 @@ const mapLayers = [
     erase: removeRoutes
   }),
   new Layer({ id: "temperature", parent: "viewbox", draw: drawTemperature }),
+  new Layer({
+    id: "mana",
+    parent: "viewbox",
+    children: ["manaHot", "manaCold", "manaGale"].map(id => ({ id, tag: "g" })),
+    draw: drawMana
+  }),
   new Layer({
     id: "coastline",
     parent: "viewbox",

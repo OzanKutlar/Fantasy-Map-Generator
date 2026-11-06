@@ -14,6 +14,7 @@ import { Biomes } from "@/model/physical/biomes-generator";
 import { Features } from "@/model/physical/features-generator";
 import { HeightmapGenerator } from "@/model/physical/heightmap-generator";
 import { Ice } from "@/model/physical/ice-generator";
+import { Mana } from "@/model/physical/mana-generator";
 import { Precipitation } from "@/model/physical/precipitation-generator";
 import { Rivers } from "@/model/physical/river-generator";
 import { Temperature } from "@/model/physical/temperature-generator";
@@ -38,6 +39,7 @@ const generationPipelineSteps = [
   { id: "depressionLakes", run: () => Grid.addDeepDepressionLakes() },
   { id: "nearSeaLakes", run: () => Grid.openNearSeaLakes() },
   { id: "mapSize", run: () => Coordinates.generate() },
+  { id: "manaSources", run: () => Mana.placeSources() },
   { id: "temperatures", run: () => Temperature.generate() },
   { id: "precipitation", run: () => Precipitation.generate() },
   { id: "clearPack", run: () => Pack.clear() },

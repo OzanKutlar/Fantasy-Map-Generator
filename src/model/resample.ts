@@ -7,6 +7,7 @@ import { MapRestoration } from "@/model/map-restoration";
 import { Coordinates } from "@/model/physical/coordinates";
 import { Features } from "@/model/physical/features-generator";
 import { Ice } from "@/model/physical/ice-generator";
+import { Mana } from "@/model/physical/mana-generator";
 import { Temperature } from "@/model/physical/temperature-generator";
 import type { GridGraph } from "@/types/grid-graph";
 import type { PackedGraph } from "@/types/packed-graph";
@@ -68,6 +69,7 @@ class Resampler {
     Grid.openNearSeaLakes();
 
     Coordinates.calculate();
+    Mana.projectSources(projection, scale); // the ore bodies move with the land they sit in
     Temperature.generate();
 
     Pack.generate();

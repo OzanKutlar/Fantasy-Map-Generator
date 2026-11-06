@@ -1,3 +1,4 @@
+import { Mana } from "@/model/physical/mana-generator";
 import { SEA_LEVEL } from "@/utils/height-utils";
 import { log } from "@/utils/logger";
 import { minmax, rn } from "@/utils/number-utils";
@@ -8,7 +9,7 @@ class TemperatureModule {
     grid.cells.temp = this.compute(grid.cells.h);
   }
 
-  /** temperature of every grid cell for the given heights, the grid itself stays untouched */
+  /** temperature of every grid cell for the given heights, mana sites included; the grid itself stays untouched */
   compute(h: ArrayLike<number>): Int8Array {
     const { cells, cellsX, points } = grid;
     const temp = new Int8Array(cells.i.length);
@@ -57,7 +58,7 @@ class TemperatureModule {
       }
     }
 
-    return temp;
+    return Mana.applyHeat(temp);
   }
 }
 

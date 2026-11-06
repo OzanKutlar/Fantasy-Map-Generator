@@ -129,6 +129,21 @@ const reliefRule = z.strictObject({
   size: z.strictObject({ min: positive, max: positive }) // at the rule's lowest height, growing with height to max
 });
 
+/** a magnetized ore body, in map coordinates: where mana streams are bent into collision sites */
+const manaSource = z.strictObject({
+  x: z.number(),
+  y: z.number(),
+  polarity: z.union([z.literal(1), z.literal(-1)]),
+  radius: positive
+});
+
+/** read whenever the climate is derived: the sources and the strength their effects apply at */
+const manaSettings = z.strictObject({
+  strength: nonNegative,
+  reach: count, // gale length in cells
+  sources: z.array(manaSource)
+});
+
 /** where the map sits on the globe */
 const geography = z.strictObject({
   mapSize: percent,
@@ -190,6 +205,7 @@ export const mapSchema = z.strictObject({
   customIcons,
   coastline: coastlineSettings,
   relief: z.strictObject({ rules: z.array(reliefRule) }),
+  mana: manaSettings.optional(), // absent on maps generated without mana
   viewOnly: z.boolean().optional()
 });
 
@@ -224,7 +240,8 @@ export const optionsSchema = z.strictObject({
     states: z.strictObject({ limit: count, sizeVariety: nonNegative, growthRate: nonNegative }),
     provinces: z.strictObject({ ratio: percent }),
     religions: z.strictObject({ limit: count }),
-    burgs: z.strictObject({ limit: count }) // AUTO_BURG_LIMIT means "as many as the land supports"
+    burgs: z.strictObject({ limit: count }), // AUTO_BURG_LIMIT means "as many as the land supports"
+    mana: z.strictObject({ sources: count, strength: nonNegative, reach: count }) // ore bodies to place, effect strength, gale length in cells
   }),
 
   /** how the app itself behaves: applied at once, generating nothing, describing no map */

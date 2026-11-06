@@ -1090,6 +1090,34 @@
       }
     }
   },
+  "mana": {
+    "attrs": {
+      "opacity": null,
+      "filter": null,
+      "mask": null
+    },
+    "groups": {
+      "manaHot": {
+        "attrs": {
+          "fill": "#d7301f",
+          "opacity": 0.5
+        }
+      },
+      "manaCold": {
+        "attrs": {
+          "fill": "#2c7fb8",
+          "opacity": 0.5
+        }
+      },
+      "manaGale": {
+        "attrs": {
+          "stroke": "#7a5195",
+          "stroke-width": 1,
+          "opacity": 0.8
+        }
+      }
+    }
+  },
   "map": {
     "attrs": {
       "filter": "url(#filter-grayscale)"

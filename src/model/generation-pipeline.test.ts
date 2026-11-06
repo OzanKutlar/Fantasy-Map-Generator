@@ -4,6 +4,7 @@ import { Grid } from "@/model/graph/grid-generator";
 import { Pack } from "@/model/graph/pack-generator";
 import { Features } from "@/model/physical/features-generator";
 import { HeightmapGenerator } from "@/model/physical/heightmap-generator";
+import { Mana } from "@/model/physical/mana-generator";
 import { Precipitation } from "@/model/physical/precipitation-generator";
 import { Temperature } from "@/model/physical/temperature-generator";
 import { GenerationPipeline } from "./generation-pipeline";
@@ -21,6 +22,7 @@ test("a new world clears the previous map's collections before rebuilding its gr
   Object.assign(Features, { markupGrid: noop });
   Object.assign(Temperature, { generate: noop });
   Object.assign(Precipitation, { generate: noop });
+  Object.assign(Mana, { placeSources: noop });
   vi.spyOn(Coordinates, "generate").mockImplementation(noop);
   const previous = {
     relief: [{ type: "mount", x: 10, y: 10, s: 5 }],

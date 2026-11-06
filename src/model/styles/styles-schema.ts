@@ -693,6 +693,23 @@ export const stylesSchema = z.strictObject({
       })
     })
   }),
+  mana: z.strictObject({
+    attrs: z.strictObject({ opacity, filter, mask: clip }),
+    groups: z.strictObject({
+      manaHot: meta(z.strictObject({ attrs: z.strictObject({ fill, opacity }) }), { label: t("Hot sites") }),
+      manaCold: meta(z.strictObject({ attrs: z.strictObject({ fill, opacity }) }), { label: t("Cold sites") }),
+      manaGale: meta(
+        z.strictObject({
+          attrs: z.strictObject({
+            stroke: strokeGroup.stroke,
+            "stroke-width": strokeGroup["stroke-width"],
+            opacity
+          })
+        }),
+        { label: t("Gales") }
+      )
+    })
+  }),
   map: z.strictObject({
     attrs: z.strictObject({
       filter: choice(MAP_FILTERS, {

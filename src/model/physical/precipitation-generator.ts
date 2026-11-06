@@ -3,6 +3,7 @@ import Alea from "alea";
 import { mean, range } from "d3";
 import { Grid } from "@/model/graph/grid-generator";
 import { Lattice } from "@/model/graph/lattice";
+import { Mana } from "@/model/physical/mana-generator";
 import { SEA_LEVEL } from "@/utils/height-utils";
 import { minmax } from "@/utils/number-utils";
 import { rand } from "@/utils/probability-utils";
@@ -112,7 +113,7 @@ class PrecipitationModule {
       passWind(range(cells.i.length - cellsX, cells.i.length, 1), maxPrecS, -cellsX, cellsY, dy / spacing);
     }
 
-    return prec;
+    return Mana.applyMoisture(prec); // after the winds: draws on its own PRNG, never on Math.random
   }
 
   /**
